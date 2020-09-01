@@ -50,20 +50,23 @@ export class AppComponent implements OnInit {
       this.userProfile = user;
       console.log(this.userProfile);
       this.isError = false;
+
+      this.profile.setUserEmailName(this.userProfile.firstName, this.userProfile.lastName).then((user) => { 
+        console.log('email success');
+       }).catch((error) => {
+        this.setError(error.error);
+    })
       this.userProfile.email = this.emailLint(this.fName, this.lName);
       this.clearSpinners();
     }).catch((error) => {
-      console.log(error.error);
-      if (error.error == 'Invalid name') {
-        this.isError = true;
-        this.error = error.error;
-        this.clearSpinners();
-      } else if (error.error == 'Error on email generation') {
-        this.isEmailError = true;
-        this.emailError = error.error;
-        this.clearSpinners();
-      }
+        this.setError(error.error);
     })
+  }
+
+  setError (msg) {
+    this.isError = true;
+    this.error = msg;
+    this.clearSpinners();
   }
 
   emailLint(firstName, lastName) {

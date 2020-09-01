@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 export interface IProfile {
   firstName: string; 
   lastName: string; 
@@ -37,7 +37,11 @@ export interface IProfile {
           this.user.lastName = lastName;
           this.user.username = firstName + '.' + lastName
           resolve(this.user);
-          this.setUserEmailName(this.user.firstName, this.user.lastName);
+          // this.setUserEmailName(this.user.firstName, this.user.lastName).then((email) => {
+
+          // }).catch((error) => {
+          //   console.log(error.error);
+          // })
         } else {
           reject({ error: 'Invalid name' });
         }
