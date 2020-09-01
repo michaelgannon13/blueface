@@ -1,1 +1,35 @@
-<button (click)="getData()">Let's do this!</button>
+<div>
+    <div>
+        <select name="languages" (change)="languageToggle($event.target.value)" [attr.disabled]="isLoading ? '' : null">
+            <option value="english">English</option>
+            <option value="italian">Italian</option>
+            <option value="french">French</option>
+        </select>
+    </div>
+</div>
+<div>
+    <div>
+        <h1> {{ title }} </h1>
+        <div>
+            <p> Username: {{userProfile?.username | lowercase}} </p>
+            <p> Email: {{userProfile?.email | lowercase}}</p>
+        </div>
+        <div>
+            <div>
+                <label> First Name: </label>
+                <input #firstName [attr.disabled]="isLoading ? '' : null" type="text"
+                    value="{{userProfile?.firstName}}" />
+            </div>
+            <div>
+                <label> Last Name: </label>
+                <input #lastName [attr.disabled]="isLoading ? '' : null" type="text"
+                    value="{{userProfile?.lastName}}" />
+            </div>
+            <input [attr.disabled]="isLoading ? '' : null" type="button" value="Save" (click)="saveProfile()" />
+        </div>
+        <p *ngIf="isLoading"> Loading profile... </p>
+        <p *ngIf="isSaving"> Saving profile... </p>
+        <p *ngIf="isError"> Error! {{ error }}</p>
+        <p *ngIf="isEmailError"> {{ emailError }}</p>
+    </div>
+</div>

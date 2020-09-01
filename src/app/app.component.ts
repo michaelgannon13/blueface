@@ -1,79 +1,99 @@
-import { Component } from '@angular/core';
-import { DataService } from './services/data.service';
-
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { IProfile, ProfileService } from './services/profile/profile.service';
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  public title = 'Profile';
+  public userProfile;
+  public fName;
+  public lName;
+  public error;
+  public emailError;
+  public isLoading = false;
+  public isSaving = false;
+  public isEmailError = false;
+  public isError = false;
+  @ViewChild('firstName', null) firstName: ElementRef;
+  @ViewChild('lastName', null) lastName: ElementRef;
 
-  data;
-  countires = {
-    "countries": []
+  public user: IProfile;
+
+  constructor(private profile: ProfileService) { }
+
+  ngOnInit() {
+    this.loadProfile();
   }
-  filteredResult = 'test';
 
-  constructor(private dataService: DataService) { }
-
-  getData() {
-    this.dataService.getData()
-      .subscribe((res: any[]) => {
-        this.data = res;
-        this.processData(this.data);
-      });
+  loadProfile() {
+      this.isLoading = true;
+      this.profile.getProfileUser().then((profile) => {
+      this.userProfile = profile;
+      this.userProfile.email = this.emailLint(this.userProfile.firstName, this.userProfile.lastName);
+      this.clearSpinners();
+      this.isError = false;
+    }).catch((error) => {
+      this.isError = true;
+      this.error = error.error;
+      this.clearSpinners();
+      this.ngOnInit();
+    })
   }
 
-  processData(data){
+  saveProfile() {
+    this.isSaving = true;
+    this.isError = false;
+    this.fName = this.firstName.nativeElement.value;
+    this.lName = this.lastName.nativeElement.value;
+    this.profile.setName(this.fName, this.lName).then((user) => {
+      this.userProfile = user;
+      console.log(this.userProfile);
+      this.isError = false;
+      this.userProfile.email = this.emailLint(this.fName, this.lName);
+      this.clearSpinners();
+    }).catch((error) => {
+      console.log(error.error);
+      if (error.error == 'Invalid name') {
+        this.isError = true;
+        this.error = error.error;
+        this.clearSpinners();
+      } else if (error.error == 'Error on email generation') {
+        this.isEmailError = true;
+        this.emailError = error.error;
+        this.clearSpinners();
+      }
+    })
+  }
 
-    var flattenedArray = [];
+  emailLint(firstName, lastName) {
+    return firstName.trim().replace(/ /g, "") + '.' + lastName.trim().replace(/ /g, "") + '@blueface.com'
+  }
 
-    const partners = data.partners;
+  clearSpinners() {
+    this.isLoading = false;
+    this.isSaving = false;
+  }
 
-    console.log(partners);
-
-    function checkDate(date) {
-      console.log(date);
-      
-      return date = date+1 ;
+  languageToggle(language) {
+    switch (language) {
+      case 'english': {
+        this.title = 'Profile'
+        break;
+      }
+      case 'italian': {
+        this.title = 'Profilo';
+        break;
+      }
+      case 'french': {
+        this.title = 'Profil';
+        break;
+      }
+      default: {
+        this.title = 'Profile'
+        break;
+      }
     }
-    
-
-    const test = partners.filter((value) => {
-      return value.availableDates.every(checkDate);
-    });
-
-    console.log(test);
-    
-
-
-
-
-
-
-      // for(let i = 0; i< partners.length; i++){
-      //   const partnersDates = partners[i].availableDates;
-
-      //   const arrayLength = partnersDates.length;
-      //   for (let p = 0; p < arrayLength; p++) {
-
-      //     let date = partnersDates[p]
-      //     console.log(date);
-
-      //     if (date === date+1 || date === date-1) {
-      //       console.log(true);
-            
-      //     }
-      //   }
-                
-
-      // }
-      
-    
-    // this.postData(this.filteredResult);
   }
 
-  postData(val) {
-    this.dataService.postData(val);
-  }
 }
