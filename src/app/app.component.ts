@@ -15,6 +15,9 @@ export class AppComponent implements OnInit {
   public isSaving = false;
   public isEmailError = false;
   public isToast = false;
+
+  public originalFName;
+  public originalLName;
   @ViewChild('firstName', null) firstName: ElementRef;
   @ViewChild('lastName', null) lastName: ElementRef;
 
@@ -30,6 +33,9 @@ export class AppComponent implements OnInit {
     this.isLoading = true;
     this.profile.getProfileUser().then((profile) => {
       this.userProfile = profile;
+      this.originalFName = profile.firstName;
+      this.originalLName = profile.lastName;
+
       this.clearSpinners();
       this.isToast = false;
     }).catch((error) => {
@@ -44,10 +50,17 @@ export class AppComponent implements OnInit {
     this.fName = this.firstName.nativeElement.value;
     this.lName = this.lastName.nativeElement.value;
     this.profile.setName(this.fName, this.lName).then((user) => {
+      this.profile.setUserEmailName(this.fName, this.lName).then((email) => {
+        this.userProfile.email = email;
+      }).catch((error) => {
+        this.setToast(error.error);
+        this.fName = this.originalFName;
+        this.lName = this.originalLName;
+        this.userProfile.username = this.fName + '.' + this.lName;
+      })
       this.userProfile = user;
       console.log(this.userProfile);
       this.isToast = false;
-      this.setEmail(this.userProfile.firstName, this.userProfile.lastName);
       this.clearSpinners();
     }).catch((error) => {
       this.setToast(error.error);
@@ -58,14 +71,6 @@ export class AppComponent implements OnInit {
     this.isToast = true;
     this.error = msg;
     this.clearSpinners();
-  }
-
-  setEmail(firstName, lastName) {
-    this.profile.setUserEmailName(firstName, lastName).then((email) => {
-      this.userProfile.email = email;
-    }).catch((error) => {
-      this.setToast(error.error);
-    })
   }
 
   clearSpinners() {
