@@ -1,4 +1,6 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import StringLint from '../../utils/stringLint';
+
 export interface IProfile {
   firstName: string; 
   lastName: string; 
@@ -9,6 +11,8 @@ export interface IProfile {
 
 @Injectable({ providedIn: 'root' }) export class ProfileService {
   public user: IProfile; constructor() { }
+
+  stringLint = new StringLint();
 
   getProfileUser(): Promise<IProfile> {
     return new Promise((resolve, reject) => {
@@ -35,7 +39,7 @@ export interface IProfile {
         if (Math.round(Math.random())) {
           this.user.firstName = firstName;
           this.user.lastName = lastName;
-          this.user.username = this.stringLint('username', firstName, lastName);
+          this.user.username = this.stringLint.stringLint('username', firstName, lastName);
           resolve(this.user);
         } else {
           reject({ error: 'Invalid name' });
@@ -48,7 +52,7 @@ export interface IProfile {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (Math.round(Math.random())) {
-          this.user.email =  this.stringLint(null , firstName, lastName);
+          this.user.email =  this.stringLint.stringLint(null , firstName, lastName);
           resolve(this.user.email);
         } else {
           reject({ error: 'Error on email generation' });
@@ -56,16 +60,4 @@ export interface IProfile {
       }, Math.random() * 5000);
     });
   }
-
-  
-  stringLint(username, firstName, lastName) {
-    const userName = firstName.trim().replace(/ /g, "") + '.' + lastName.trim().replace(/ /g, "");
-    const email = userName + '@blueface.com'
-    if (username) {
-      return userName
-    } else {
-      return email
-    }
-  }
-
 }

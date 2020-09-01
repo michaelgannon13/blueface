@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { IProfile, ProfileService } from './services/profile/profile.service';
+import StringLint from './utils/stringLint';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
@@ -10,14 +11,15 @@ export class AppComponent implements OnInit {
   public fName;
   public lName;
   public error;
-  public emailError;
   public isLoading = false;
   public isSaving = false;
-  public isEmailError = false;
   public isToast = false;
-
   public originalFName;
   public originalLName;
+
+  stringLint = new StringLint();
+
+
   @ViewChild('firstName', null) firstName: ElementRef;
   @ViewChild('lastName', null) lastName: ElementRef;
 
@@ -35,7 +37,6 @@ export class AppComponent implements OnInit {
       this.userProfile = profile;
       this.originalFName = profile.firstName;
       this.originalLName = profile.lastName;
-
       this.clearSpinners();
       this.isToast = false;
     }).catch((error) => {
@@ -56,7 +57,8 @@ export class AppComponent implements OnInit {
         this.setToast(error.error);
         this.fName = this.originalFName;
         this.lName = this.originalLName;
-        this.userProfile.username = this.fName + '.' + this.lName;
+        this.userProfile.username = this.stringLint.stringLint('username', this.fName, this.lName);
+        this.userProfile.email = this.userProfile.email;
       })
       this.userProfile = user;
       console.log(this.userProfile);
@@ -67,9 +69,9 @@ export class AppComponent implements OnInit {
     })
   }
 
-  setToast(msg) {
+  setToast(message) {
     this.isToast = true;
-    this.error = msg;
+    this.error = message;
     this.clearSpinners();
   }
 
