@@ -18,7 +18,7 @@ export interface IProfile {
             firstName: 'Michael', 
             lastName: 'Collins', 
             username: 'michael.collins',
-            email: '',
+            email: 'michael.collins@@blueface.com',
             age: 30
           }; 
           resolve(this.user);
