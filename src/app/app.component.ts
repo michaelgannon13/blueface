@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     this.isLoading = true;
     this.profile.getProfileUser().then((profile) => {
       this.userProfile = profile;
-      // this.setEmail(this.userProfile.firstName, this.userProfile.lastName);
       this.clearSpinners();
       this.isToast = false;
     }).catch((error) => {
