@@ -37,11 +37,6 @@ export interface IProfile {
           this.user.lastName = lastName;
           this.user.username = firstName + '.' + lastName
           resolve(this.user);
-          // this.setUserEmailName(this.user.firstName, this.user.lastName).then((email) => {
-
-          // }).catch((error) => {
-          //   console.log(error.error);
-          // })
         } else {
           reject({ error: 'Invalid name' });
         }
@@ -53,7 +48,7 @@ export interface IProfile {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (Math.round(Math.random())) {
-          this.user.email = firstName + '.' + lastName + '@blueface.com'
+          this.user.email = this.emailLint(firstName, lastName);
           resolve(this.user.email);
         } else {
           reject({ error: 'Error on email generation' });
@@ -61,4 +56,10 @@ export interface IProfile {
       }, Math.random() * 5000);
     });
   }
+
+  
+  emailLint(firstName, lastName) {
+    return firstName.trim().replace(/ /g, "") + '.' + lastName.trim().replace(/ /g, "") + '@blueface.com'
+  }
+
 }

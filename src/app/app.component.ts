@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   public isLoading = false;
   public isSaving = false;
   public isEmailError = false;
-  public isError = false;
+  public isToast = false;
   @ViewChild('firstName', null) firstName: ElementRef;
   @ViewChild('lastName', null) lastName: ElementRef;
 
@@ -27,50 +27,46 @@ export class AppComponent implements OnInit {
   }
 
   loadProfile() {
-      this.isLoading = true;
-      this.profile.getProfileUser().then((profile) => {
+    this.isLoading = true;
+    this.profile.getProfileUser().then((profile) => {
       this.userProfile = profile;
-      this.userProfile.email = this.emailLint(this.userProfile.firstName, this.userProfile.lastName);
+      this.setEmail(this.userProfile.firstName, this.userProfile.lastName);
       this.clearSpinners();
-      this.isError = false;
+      this.isToast = false;
     }).catch((error) => {
-      this.isError = true;
-      this.error = error.error;
-      this.clearSpinners();
+      this.setToast(error.error);
       this.ngOnInit();
     })
   }
 
   saveProfile() {
     this.isSaving = true;
-    this.isError = false;
+    this.isToast = false;
     this.fName = this.firstName.nativeElement.value;
     this.lName = this.lastName.nativeElement.value;
     this.profile.setName(this.fName, this.lName).then((user) => {
       this.userProfile = user;
       console.log(this.userProfile);
-      this.isError = false;
-
-      this.profile.setUserEmailName(this.userProfile.firstName, this.userProfile.lastName).then((user) => { 
-        console.log('email success');
-       }).catch((error) => {
-        this.setError(error.error);
-    })
-      this.userProfile.email = this.emailLint(this.fName, this.lName);
+      this.isToast = false;
+      this.setEmail(this.userProfile.firstName, this.userProfile.lastName);
       this.clearSpinners();
     }).catch((error) => {
-        this.setError(error.error);
+      this.setToast(error.error);
     })
   }
 
-  setError (msg) {
-    this.isError = true;
+  setToast(msg) {
+    this.isToast = true;
     this.error = msg;
     this.clearSpinners();
   }
 
-  emailLint(firstName, lastName) {
-    return firstName.trim().replace(/ /g, "") + '.' + lastName.trim().replace(/ /g, "") + '@blueface.com'
+  setEmail(firstName, lastName) {
+    this.profile.setUserEmailName(firstName, lastName).then((email) => {
+      this.userProfile.email = email;
+    }).catch((error) => {
+      this.setToast(error.error);
+    })
   }
 
   clearSpinners() {
