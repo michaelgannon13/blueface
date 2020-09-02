@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import StringLint from '../../utils/stringLint';
 
 export interface IProfile {
-  firstName: string; 
-  lastName: string; 
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   age: number;
-} 
+}
 
 @Injectable({ providedIn: 'root' }) export class ProfileService {
   public user: IProfile; constructor() { }
@@ -19,12 +19,12 @@ export interface IProfile {
       setTimeout(() => {
         if (Math.round(Math.random())) {
           this.user = {
-            firstName: 'Michael', 
-            lastName: 'Collins', 
+            firstName: 'Michael',
+            lastName: 'Collins',
             username: 'michael.collins',
             email: 'michael.collins@blueface.com',
             age: 30
-          }; 
+          };
           resolve(this.user);
         } else {
           reject({ error: 'Profile not found...trying again!' });
@@ -52,7 +52,7 @@ export interface IProfile {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (Math.round(Math.random())) {
-          this.user.email =  this.stringLint.stringLint(null , firstName, lastName);
+          this.user.email = this.stringLint.stringLint(null, firstName, lastName);
           resolve(this.user.email);
         } else {
           reject({ error: 'Error on email generation' });

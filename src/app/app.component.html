@@ -18,14 +18,12 @@
             <div>
                 <label> First Name: </label>
                 <input #firstName [attr.disabled]="isLoading ? '' : null" type="text"
-                    value="{{userProfile?.firstName}}" 
-                />
+                    value="{{userProfile?.firstName}}" />
             </div>
             <div>
                 <label> Last Name: </label>
                 <input #lastName [attr.disabled]="isLoading ? '' : null" type="text"
-                    value="{{userProfile?.lastName}}" 
-                />
+                    value="{{userProfile?.lastName}}" />
             </div>
             <input [attr.disabled]="isLoading ? '' : null" type="button" value="Save" (click)="saveProfile()" />
         </div>

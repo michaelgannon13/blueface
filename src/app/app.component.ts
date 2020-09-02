@@ -14,11 +14,8 @@ export class AppComponent implements OnInit {
   public isLoading = false;
   public isSaving = false;
   public isToast = false;
-  public originalFName;
-  public originalLName;
 
   stringLint = new StringLint();
-
 
   @ViewChild('firstName', null) firstName: ElementRef;
   @ViewChild('lastName', null) lastName: ElementRef;
@@ -35,8 +32,6 @@ export class AppComponent implements OnInit {
     this.isLoading = true;
     this.profile.getProfileUser().then((profile) => {
       this.userProfile = profile;
-      this.originalFName = profile.firstName;
-      this.originalLName = profile.lastName;
       this.clearSpinners();
       this.isToast = false;
     }).catch((error) => {
@@ -55,9 +50,7 @@ export class AppComponent implements OnInit {
         this.userProfile.email = email;
       }).catch((error) => {
         this.setToast(error.error);
-        this.fName = this.originalFName;
-        this.lName = this.originalLName;
-        this.userProfile.username = this.stringLint.stringLint('username', this.fName, this.lName);
+        this.userProfile.username = this.userProfile.username;
         this.userProfile.email = this.userProfile.email;
       })
       this.userProfile = user;
